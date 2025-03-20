@@ -90,7 +90,7 @@ std::ostream &operator<<(std::ostream &out, const Row<T> &row)
             out << ",";
     }
 
-    return out << std::endl;
+    return out;
 }
 
 }

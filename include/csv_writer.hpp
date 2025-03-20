@@ -1,6 +1,7 @@
 #pragma once
 
-#include "exception.hpp"
+#include "csv_exception.hpp"
+#include "csv_row.hpp"
 
 #include <fstream>
 
@@ -33,10 +34,6 @@ void Writer::operator()(const std::string &fileName, const std::vector<std::vect
 	
 	if (!fileName.ends_with(".csv"))
 		throw Exception("Invalid file format");
-
-    std::ifstream file(fileName);
-    if (!file.is_open())
-        throw Exception("File " + fileName + " is not opened");
 	
     std::ofstream file(fileName);
     if (!file.is_open())

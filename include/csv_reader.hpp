@@ -1,7 +1,7 @@
 #pragma once
 
-#include "exception.hpp"
-#include "range.hpp"
+#include "csv_exception.hpp"
+#include "csv_range.hpp"
 
 #include <fstream>
 
@@ -29,6 +29,12 @@ public:
 template<class T>
 std::vector<std::vector<T>> Reader<T>::operator()(const std::string &fileName) const
 {
+    if (fileName.empty())
+        throw Exception("File name is null");
+
+    if (!fileName.ends_with(".csv"))
+        throw Exception("Invalid file format");
+
     std::ifstream file(fileName);
     if (!file.is_open())
         throw Exception("File " + fileName + " is not opened");
@@ -45,6 +51,7 @@ std::vector<std::vector<T>> Reader<T>::operator()(const std::string &fileName) c
         result.push_back(vectorRow);
     }
 
+    file.close();
     return result;
 }
 

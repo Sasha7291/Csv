@@ -1,6 +1,6 @@
 #pragma once
 
-#include "iterator.hpp"
+#include "csv_iterator.hpp"
 
 
 namespace csv

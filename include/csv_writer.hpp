@@ -28,6 +28,16 @@ public:
 template<class T>
 void Writer::operator()(const std::string &fileName, const std::vector<std::vector<T>> &data) const
 {
+	if (fileName.empty())
+        throw Exception("File name is null");
+	
+	if (!fileName.ends_with(".csv"))
+		throw Exception("Invalid file format");
+
+    std::ifstream file(fileName);
+    if (!file.is_open())
+        throw Exception("File " + fileName + " is not opened");
+	
     std::ofstream file(fileName);
     if (!file.is_open())
         throw Exception("File " + fileName + " is not opened");

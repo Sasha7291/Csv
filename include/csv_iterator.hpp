@@ -4,27 +4,35 @@
 
 #include <iterator>
 
+
 namespace csv
 {
 
 template<class T>
-class Iterator : public std::iterator<std::input_iterator_tag, Row<T>>
+class Iterator
 {
 
 public:
+    using iterator_category = std::forward_iterator_tag;
+    using value_type = Row<T>;
+    using element_type = Row<T>;
+    using pointer = value_type *;
+    using reference = const value_type &;
+    using difference_type = std::ptrdiff_t;
+
     Iterator(std::istream& in);
     Iterator();
     ~Iterator() = default;
 
     Iterator &operator++();
     Iterator operator++(int);
-    [[nodiscard]] const Row<T> &operator*() const;
-    [[nodiscard]] const Row<T> *operator->() const;
+    [[nodiscard]] reference operator*() const;
+    [[nodiscard]] const pointer operator->() const;
     [[nodiscard]] bool operator==(const Iterator &other);
     [[nodiscard]] bool operator!=(const Iterator &other);
 
 private:
-    std::istream* istream_;
+    std::istream *istream_;
     Row<T> row_;
 
 };
@@ -60,13 +68,13 @@ Iterator<T> Iterator<T>::operator++(int)
 }
 
 template<class T>
-const Row<T> &Iterator<T>::operator*() const
+Iterator<T>::reference Iterator<T>::operator *() const
 {
     return row_;
 }
 
 template<class T>
-const Row<T> *Iterator<T>::operator ->() const
+const Iterator<T>::pointer Iterator<T>::operator->() const
 {
     return &row_;
 }

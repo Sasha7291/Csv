@@ -1,7 +1,9 @@
 #pragma once
 
+#include "csv_common.hpp"
+
 #include <sstream>
-#include <vector>
+
 
 namespace csv
 {
@@ -15,8 +17,8 @@ class Row
     friend std::ostream &operator<<(std::ostream &out, const Row<K> &row);
 
 public:
-    Row(const std::vector<T> &data) noexcept;
-    Row(std::vector<T> &&data) noexcept;
+    Row(const Data<T> &data) noexcept;
+    Row(Data<T> &&data) noexcept;
     Row() noexcept = default;
     ~Row() noexcept = default;
 
@@ -29,17 +31,17 @@ public:
     [[nodiscard]] std::size_t size() const;
 
 private:
-    std::vector<T> data_;
+    Data<T> data_;
 
 };
 
 template<class T>
-Row<T>::Row(const std::vector<T> &data) noexcept
+Row<T>::Row(const Data<T> &data) noexcept
     : data_(data)
 {}
 
 template<class T>
-Row<T>::Row(std::vector<T> &&data) noexcept
+Row<T>::Row(Data<T> &&data) noexcept
     : data_(std::move(data))
 {}
 

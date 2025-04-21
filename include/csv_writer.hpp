@@ -22,12 +22,12 @@ public:
     Writer &operator=(Writer &&) = delete;
 
     template<class T>
-    void operator()(const std::string &fileName, const std::vector<std::vector<T>> &data) const;
+    void operator()(const std::string &fileName, const Data<Data<T>> &data) const;
 
 };
 
 template<class T>
-void Writer::operator()(const std::string &fileName, const std::vector<std::vector<T>> &data) const
+void Writer::operator()(const std::string &fileName, const Data<Data<T>> &data) const
 {
 	if (fileName.empty())
         throw Exception("File name is null");

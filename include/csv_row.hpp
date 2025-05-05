@@ -37,12 +37,12 @@ private:
 
 template<class T>
 Row<T>::Row(const Data<T> &data) noexcept
-    : data_(data)
+    : data_{data}
 {}
 
 template<class T>
 Row<T>::Row(Data<T> &&data) noexcept
-    : data_(std::move(data))
+    : data_{std::move(data)}
 {}
 
 template<class T>
@@ -63,12 +63,12 @@ std::istream &operator>>(std::istream &in, Row<T> &row)
     row.data_.clear();
     std::string line;
     std::getline(in, line);
-    std::stringstream lineStream(line);
+    std::stringstream lineStream{line};
 
     std::string word;
     while (std::getline(lineStream, word, ','))
     {
-        std::stringstream wordStream(word);
+        std::stringstream wordStream{word};
         T temp;
         wordStream >> temp;
         row.data_.push_back(temp);

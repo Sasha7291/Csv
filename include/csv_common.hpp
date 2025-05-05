@@ -9,6 +9,12 @@
 
 namespace csv
 {
+enum Direction
+{
+    Rows,
+    Columns
+};
+
 #ifdef QT
 template<class T>
 using Data = QVector<T>;

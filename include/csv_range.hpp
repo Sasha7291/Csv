@@ -23,19 +23,19 @@ private:
 
 template<class T>
 InputRange<T>::InputRange(std::istream &in)
-    : stream_(in)
+    : stream_{in}
 {}
 
 template<class T>
 Iterator<T> InputRange<T>::begin()
 {
-    return Iterator<T>(stream_);
+    return Iterator<T>{stream_};
 }
 
 template<class T>
 Iterator<T> InputRange<T>::end()
 {
-    return Iterator<T>();
+    return Iterator<T>{};
 }
 
 }

@@ -39,14 +39,14 @@ private:
 
 template<class T>
 Iterator<T>::Iterator(std::istream &in)
-    : istream_(in.good() ? &in : nullptr)
+    : istream_{in.good() ? &in : nullptr}
 {
     ++(*this);
 }
 
 template<class T>
 Iterator<T>::Iterator()
-    : istream_(nullptr)
+    : istream_{nullptr}
 {}
 
 template<class T>
@@ -62,7 +62,7 @@ Iterator<T> &Iterator<T>::operator++()
 template<class T>
 Iterator<T> Iterator<T>::operator++(int)
 {
-    Iterator temp(*this);
+    Iterator temp{*this};
     ++(*this);
     return temp;
 }

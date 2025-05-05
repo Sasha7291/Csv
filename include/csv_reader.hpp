@@ -14,7 +14,7 @@ class Reader
 {
 
 public:
-    Reader() noexcept = default;
+    Reader(Direction dir = Rows) noexcept;
     ~Reader() noexcept = default;
 
     Reader(const Reader &) = delete;
@@ -24,23 +24,58 @@ public:
 
     [[nodiscard]] Data<Data<T>> operator()(const std::string &fileName) const;
 
+private:
+    [[nodiscard]] Data<Data<T>> readColumns(std::ifstream &file) const;
+    [[nodiscard]] Data<Data<T>> readRows(std::ifstream &file) const;
+
+    Direction dir_;
+
 };
+
+template<class T>
+Reader<T>::Reader(Direction dir) noexcept
+    : dir_{dir}
+{}
 
 template<class T>
 Data<Data<T>> Reader<T>::operator()(const std::string &fileName) const
 {
     if (fileName.empty())
-        throw Exception("File name is null");
+        throw Exception{"File name is null"};
 
     if (!fileName.ends_with(".csv"))
-        throw Exception("Invalid file format");
+        throw Exception{"Invalid file format"};
 
-    std::ifstream file(fileName);
+    std::ifstream file{fileName};
     if (!file.is_open())
-        throw Exception("File " + fileName + " is not opened");
+        throw Exception{"File " + fileName + " is not opened"};
 
+    return (dir_ == Rows) ? readRows(file) : readColumns(file);
+}
+
+template<class T>
+Data<Data<T>> Reader<T>::readColumns(std::ifstream &file) const
+{
     Data<Data<T>> result;
-    for (auto &row : InputRange<T>(file))
+    for (auto &row : InputRange<T>{file})
+    {
+        if (result.size() < row.size())
+            for (int i = 0; i < row.size(); ++i)
+                result.push_back(Data<T>{});
+
+        for (int i = 0; i < row.size(); ++i)
+            result[i].push_back(row[i]);
+    }
+
+    file.close();
+    return result;
+}
+
+template<class T>
+Data<Data<T>> Reader<T>::readRows(std::ifstream &file) const
+{
+    Data<Data<T>> result;
+    for (auto &row : InputRange<T>{file})
     {
         Data<T> vectorRow;
         vectorRow.reserve(row.size());

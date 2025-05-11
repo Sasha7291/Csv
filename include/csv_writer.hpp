@@ -50,7 +50,10 @@ void Writer<T>::operator()(const std::string &fileName, const Data<Data<T>> &dat
     if (!file.is_open())
         throw Exception{"File " + fileName + " is not opened"};
 
-
+    if (dir_ == Rows)
+        writeRows(file, data);
+    else
+        writeColumns(file, data);
 }
 
 template<class T>
@@ -67,7 +70,7 @@ void Writer<T>::writeColumns(std::ofstream &file, const Data<Data<T>> &data)
 }
 
 template<class T>
-void Writer<T>::writeRows(std::ofstream &file, const Data<Data<T> > &data)
+void Writer<T>::writeRows(std::ofstream &file, const Data<Data<T>> &data)
 {
     for (const auto &line : data)
         file << Row{line};

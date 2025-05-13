@@ -3,6 +3,7 @@
 #include "csv_exception.hpp"
 #include "csv_range.hpp"
 
+#include <filesystem>
 #include <fstream>
 
 
@@ -22,7 +23,7 @@ public:
     Reader &operator=(const Reader &) = delete;
     Reader &operator=(Reader &&) = delete;
 
-    [[nodiscard]] Data<Data<T>> operator()(const std::string &fileName) const;
+    [[nodiscard]] Data<Data<T>> operator()(const std::filesystem::path &path) const;
 
 private:
     [[nodiscard]] Data<Data<T>> readColumns(std::ifstream &file) const;
@@ -38,17 +39,17 @@ Reader<T>::Reader(Direction dir) noexcept
 {}
 
 template<class T>
-Data<Data<T>> Reader<T>::operator()(const std::string &fileName) const
+Data<Data<T>> Reader<T>::operator()(const std::filesystem::path &path) const
 {
-    if (fileName.empty())
+    if (path.empty())
         throw Exception{"File name is null"};
 
-    if (!fileName.ends_with(".csv"))
+    if (!path.string().ends_with(".csv"))
         throw Exception{"Invalid file format"};
 
-    std::ifstream file{fileName};
+    std::ifstream file{path};
     if (!file.is_open())
-        throw Exception{"File " + fileName + " is not opened"};
+        throw Exception{"File " + path.string() + " is not opened"};
 
     return (dir_ == Rows) ? readRows(file) : readColumns(file);
 }

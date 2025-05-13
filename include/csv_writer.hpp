@@ -3,6 +3,7 @@
 #include "csv_exception.hpp"
 #include "csv_row.hpp"
 
+#include <filesystem>
 #include <fstream>
 
 
@@ -22,11 +23,11 @@ public:
     Writer &operator=(const Writer &) = delete;
     Writer &operator=(Writer &&) = delete;
 
-    void operator()(const std::string &fileName, const Data<Data<T>> &data) const;
+    void operator()(const std::filesystem::path &path, const Data<Data<T>> &data) const;
 
 private:
-    void writeColumns(std::ofstream &file, const Data<Data<T>> &data);
-    void writeRows(std::ofstream &file, const Data<Data<T>> &data);
+    void writeColumns(std::ofstream &file, const Data<Data<T>> &data) const;
+    void writeRows(std::ofstream &file, const Data<Data<T>> &data) const;
 
     Direction dir_;
 
@@ -38,17 +39,17 @@ Writer<T>::Writer(Direction dir) noexcept
 {}
 
 template<class T>
-void Writer<T>::operator()(const std::string &fileName, const Data<Data<T>> &data) const
+void Writer<T>::operator()(const std::filesystem::path &path, const Data<Data<T>> &data) const
 {
-	if (fileName.empty())
+    if (path.empty())
         throw Exception{"File name is null"};
-	
-	if (!fileName.ends_with(".csv"))
+
+    if (!path.string().ends_with(".csv"))
         throw Exception{"Invalid file format"};
 	
-    std::ofstream file{fileName};
+    std::ofstream file{path};
     if (!file.is_open())
-        throw Exception{"File " + fileName + " is not opened"};
+        throw Exception{"File " + path.string() + " is not opened"};
 
     if (dir_ == Rows)
         writeRows(file, data);
@@ -57,7 +58,7 @@ void Writer<T>::operator()(const std::string &fileName, const Data<Data<T>> &dat
 }
 
 template<class T>
-void Writer<T>::writeColumns(std::ofstream &file, const Data<Data<T>> &data)
+void Writer<T>::writeColumns(std::ofstream &file, const Data<Data<T>> &data) const
 {
     Data<T> row(data.size());
     for (int i = 0; i < data[0].size(); ++i)
@@ -70,7 +71,7 @@ void Writer<T>::writeColumns(std::ofstream &file, const Data<Data<T>> &data)
 }
 
 template<class T>
-void Writer<T>::writeRows(std::ofstream &file, const Data<Data<T>> &data)
+void Writer<T>::writeRows(std::ofstream &file, const Data<Data<T>> &data) const
 {
     for (const auto &line : data)
         file << Row{line};
